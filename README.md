@@ -1,8 +1,16 @@
 Best enumerated alphabets:
 
-    CMFILVWYAGTSNQDEHRKP  483.3916 
-    CMFILVWY AGTSNQDEHRKP  75.8647
-    CMVWY FIL AGTSNQDEHRKP 41.3897
+    CMFILVWYAGTSNQDEHRKP   483.3916 
+    CMFILVWY AGTSNQDEHRKP   75.8647
+    CMVWY FIL AGTSNQDEHRKP  41.3897
+    CMVWY FIL AGTHP SNQDERK 24.8116
+
+The optimal four-bead interaction matrix in units of -RT
+
+    [[ 4.969  5.973  3.473  2.812]
+     [ 5.973  7.054  4.312  3.612]
+     [ 3.473  4.312  2.214  1.706]
+     [ 2.812  3.612  1.706  1.492]]
 
 Interaction matrices from Table 2 of [Abhinav]:
 

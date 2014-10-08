@@ -2,6 +2,7 @@ import pandas as pd
 import itertools
 import numpy as np
 from scipy import stats
+#from numba import jit
 
 '''
 Computes the interaction potential from the MJ matrix and a reduced
@@ -89,13 +90,13 @@ def compute_errors(scheme,df, B=None):
     This is supposed to match with Table 3 and this gets the right 
     rank order, but the magnitudes are not correct.
     '''
+    reduced, exact = [],[]
 
-    if B == None:
-        B = sub_matrix(scheme, df)
+    #if B == None:
+    #    B = sub_matrix(scheme, df)
     
     ''' B is a submatrix and scheme is list of list of letters '''
     #print scheme, '\n', B
-    reduced, exact = [],[]
 
     scheme_mapping = {}
     for k, block in enumerate(scheme):
@@ -111,9 +112,8 @@ def compute_errors(scheme,df, B=None):
             exact.append( df[l1][l2] )
             reduced.append( B[i,j] )
 
-    exact = np.array(exact)
-    reduced = np.array(reduced)
-    total_L2_error = ((exact-reduced)**2).sum()
+
+    total_L2_error = ((np.array(exact)-reduced)**2).sum()
     return total_L2_error
     #rms_error = np.sqrt(((exact-reduced)**2).mean())
     #_,_,corr,_,_, = stats.linregress(exact,reduced)

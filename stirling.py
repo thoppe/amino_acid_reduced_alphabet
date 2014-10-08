@@ -1,7 +1,6 @@
 from copy import deepcopy
 import itertools
 
-
 def stirling_set(base, items=list(), index=0, early_break=None):
 
     if early_break != None:
@@ -36,5 +35,5 @@ if __name__ == "__main__":
     
        
     A = range(4)
-    for x in stirling_set(A, early_break=max_set_size):
+    for x in stirling_set(A, [], early_break=max_set_size):
         print x
