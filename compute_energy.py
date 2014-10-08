@@ -141,11 +141,17 @@ five_bead_schemes["Cieplak_2001"]    = "LFI,MVWCY,HA,TGPRQSNED,K"
 for key,scheme in five_bead_schemes.items():
     five_bead_schemes[key] = [x for x in scheme.split(',')]
 
+def pretty_string(scheme):
+    return ' '.join([''.join(x) for x in scheme])
+
 if __name__ == "__main__":
     df = read_MJ_matrix()
 
+    np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
+
     for key,scheme in five_bead_schemes.items():
         B = sub_matrix(scheme, df)
-        print key, '\n', B, '\n', compute_errors(scheme,df)
+        print key
+        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df)
         print
 
