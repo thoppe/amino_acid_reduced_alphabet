@@ -3,6 +3,24 @@ import itertools
 import numpy as np
 from scipy import stats
 
+'''
+Computes the interaction potential from the MJ matrix and a reduced
+alphabet of amino acids.
+
+@article{luthra2007method,
+  title={A method for computing the inter-residue interaction 
+         potentials for reduced amino acid alphabet},
+  author={Luthra, Abhinav and Jha, Anupam Nath and 
+          Ananthasuresh, GK and Vishveswara, Saraswathi},
+  journal={Journal of biosciences},
+  volume={32},
+  number={1},
+  pages={883--889},
+  year={2007},
+  publisher={Springer}
+}
+'''
+
 residue_mapping = {
   "ALA":'A',
   "CYS":'C',
@@ -25,7 +43,7 @@ residue_mapping = {
   "TRP":'W',
   "TYR":'Y'}
 
-def read_starting_comments(f, comment_char = "#"):
+def read_starting_comments(f_MJ, comment_char = "#"):
     comments = []
     with open(f_MJ) as FIN:
         for line in FIN:
@@ -35,19 +53,21 @@ def read_starting_comments(f, comment_char = "#"):
             else: 
                 break
     return comments
-    
-f_MJ = "base_interactions/MJ.txt"
-comments = read_starting_comments(f_MJ)
-residue_rows = comments[-1].upper().split()
-residue_rows_letters = [residue_mapping[item] for item in residue_rows]
 
+def read_MJ_matrix(f_MJ = "base_interactions/MJ.txt"):
 
-df = pd.read_csv(f_MJ, sep='\s+', comment="#", 
-                 skiprows=len(comments), header=None)
-df.columns = residue_rows_letters
-df.index   = residue_rows_letters
+    comments = read_starting_comments(f_MJ)
+    residue_rows = comments[-1].upper().split()
+    residue_rows_letters = [residue_mapping[item] for item in residue_rows]
 
-def sub_block(rowL,colL):
+    df = pd.read_csv(f_MJ, sep='\s+', comment="#", 
+                     skiprows=len(comments), header=None)
+    df.columns = residue_rows_letters
+    df.index   = residue_rows_letters
+
+    return df
+
+def sub_block(rowL,colL, df):
     k1,k2 = map(len, [rowL, colL])
     A = np.zeros((k1,k2))
     
@@ -56,15 +76,16 @@ def sub_block(rowL,colL):
 
     return A
 
-def representative_weight(rowL, colL):
-    return sub_block(rowL, colL).mean()
+def representative_weight(rowL, colL, df):
+    return sub_block(rowL, colL, df).mean()
 
-def sub_matrix(letter_blocks):
+def sub_matrix(letter_blocks,df):
     k = len(letter_blocks)
     A = np.zeros((k,k))
     
     for i,j in itertools.product(range(k),repeat=2):
-        A[i,j] = representative_weight(letter_blocks[i], letter_blocks[j])
+        w = representative_weight(letter_blocks[i], letter_blocks[j],df)
+        A[i,j] = w
     return A
 
 def compute_errors(scheme,B):
@@ -107,8 +128,11 @@ five_bead_schemes["Cieplak_2001"]    = "LFI,MVWCY,HA,TGPRQSNED,K"
 for key,scheme in five_bead_schemes.items():
     five_bead_schemes[key] = [x for x in scheme.split(',')]
 
-for key,scheme in five_bead_schemes.items():
-    B = sub_matrix(scheme)
-    print key, '\n', B, '\n', compute_errors(scheme,B)
-    print
+if __name__ == "__main__":
+    df = read_MJ_matrix()
+
+    for key,scheme in five_bead_schemes.items():
+        B = sub_matrix(scheme, df)
+        print key, '\n', B, '\n', compute_errors(scheme,B)
+        print
 
