@@ -1,0 +1,18 @@
+# B matrix by Thirumalai
+# Contact energies are in -RT units
+#
+# @article{betancourt1999pair,
+#   title={Pair potentials for protein folding: choice of reference states 
+#    and sensitivity of predicted native states to variations in the 
+#     interaction schemes},
+#  author={Betancourt, Marcos R and Thirumalai, D},
+#  journal={Protein Science},
+#  volume={8},
+#  number={02},
+#  pages={361--369},
+#  year={1999},
+#  publisher={Cambridge Univ Press}
+# }
+#
+#
+#cys phe leu trp val ile met his tyr ala gly pro asn thr ser arg gln asp lys glu
