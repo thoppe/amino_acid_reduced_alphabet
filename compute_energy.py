@@ -56,10 +56,6 @@ def read_starting_comments(f_MJ, comment_char = "#"):
 
 def read_MJ_matrix(f_MJ = "base_interactions/MJ.txt"):
 
-    comments = read_starting_comments(f_MJ)
-    residue_rows = comments[-1].upper().split()
-    residue_rows_letters = [residue_mapping[item] for item in residue_rows]
-
     df = pd.read_csv(f_MJ, sep='\s+', comment="#", 
                      skiprows=len(comments), header=None)
     df.columns = residue_rows_letters
@@ -88,29 +84,46 @@ def sub_matrix(letter_blocks,df):
         A[i,j] = w
     return A
 
-def compute_errors(scheme,B):
+def compute_errors(scheme,df, B=None):
     ''' 
     This is supposed to match with Table 3 and this gets the right 
     rank order, but the magnitudes are not correct.
     '''
+
+    if B == None:
+        B = sub_matrix(scheme, df)
     
     ''' B is a submatrix and scheme is list of list of letters '''
     #print scheme, '\n', B
     reduced, exact = [],[]
-    X = np.zeros((20,20))
-    for i,j in itertools.product(range(len(scheme)),repeat=2):
-        r = B[i,j]
-        for l1,l2 in itertools.product(scheme[i], scheme[j]):
-            reduced.append(r)
-            exact.append(df[l1][l2])
+
+    scheme_mapping = {}
+    for k, block in enumerate(scheme):
+        for letter in block:
+            scheme_mapping[letter] = k
+
+    # We may not be passing a full scheme here
+    letter_subset = scheme_mapping.keys()
+
+    for l1,l2 in itertools.product(letter_subset,repeat=2):
+        if l1>=l2:
+            i,j = scheme_mapping[l1], scheme_mapping[l2]
+            exact.append( df[l1][l2] )
+            reduced.append( B[i,j] )
 
     exact = np.array(exact)
     reduced = np.array(reduced)
-    rms_error = np.sqrt(((exact-reduced)**2).mean())
-    _,_,corr,_,_, = stats.linregress(exact,reduced)
-    return rms_error, corr
+    total_L2_error = ((exact-reduced)**2).sum()
+    return total_L2_error
+    #rms_error = np.sqrt(((exact-reduced)**2).mean())
+    #_,_,corr,_,_, = stats.linregress(exact,reduced)
+    #return rms_error, corr
 
-                                    
+
+comments = read_starting_comments("base_interactions/MJ.txt")
+residue_rows = comments[-1].upper().split()
+residue_rows_letters = [residue_mapping[item] for item in residue_rows]
+                                   
 
 '''
 Five-bead schemes in Table 2 of Luthra et. al. 
@@ -133,6 +146,6 @@ if __name__ == "__main__":
 
     for key,scheme in five_bead_schemes.items():
         B = sub_matrix(scheme, df)
-        print key, '\n', B, '\n', compute_errors(scheme,B)
+        print key, '\n', B, '\n', compute_errors(scheme,df)
         print
 

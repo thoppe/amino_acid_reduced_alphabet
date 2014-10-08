@@ -1,0 +1,4 @@
+Best enumerated alphabets:
+
+    CMFILVWYAGTSNQDEHRKP  483.3916 
+    CMFILVWY AGTSNQDEHRKP  75.8647
