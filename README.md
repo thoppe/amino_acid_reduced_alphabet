@@ -1,9 +1,13 @@
 Best enumerated alphabets:
 
-    CMFILVWYAGTSNQDEHRKP   483.3916 
-    CMFILVWY AGTSNQDEHRKP   75.8647
-    CMVWY FIL AGTSNQDEHRKP  41.3897
-    CMVWY FIL AGTHP SNQDERK 24.8116
+    CMFILVWYAGTSNQDEHRKP    483.3916 
+    CMFILVWY AGTSNQDEHRKP    75.8647
+    CMVWY FIL AGTSNQDEHRKP   41.3897
+    CMVWY FIL AGTHP SNQDERK  24.8116
+    CMVWY FIL AH GTSNQRP DEK 18.8571
+
+It is worth noting that the optimal five bead is very nearly that of Cieplak's.
+
 
 The optimal four-bead interaction matrix in units of -RT
 
@@ -11,6 +15,14 @@ The optimal four-bead interaction matrix in units of -RT
      [ 5.973  7.054  4.312  3.612]
      [ 3.473  4.312  2.214  1.706]
      [ 2.812  3.612  1.706  1.492]]
+
+The optimal five-bead interaction matrix in units of -RT
+
+    [[ 4.969  5.973  3.739  3.113  2.593]
+     [ 5.973  7.054  4.625  3.932  3.357]
+     [ 3.739  4.625  2.647  2.099  1.723]
+     [ 3.113  3.932  2.099  1.758  1.440]
+     [ 2.593  3.357  1.723  1.440  1.249]]
 
 Interaction matrices from Table 2 of [Abhinav]:
 
