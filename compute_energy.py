@@ -90,10 +90,10 @@ def compute_errors(scheme,df, B=None):
     This is supposed to match with Table 3 and this gets the right 
     rank order, but the magnitudes are not correct.
     '''
-    reduced, exact = [],[]
 
-    #if B == None:
-    #    B = sub_matrix(scheme, df)
+    A = np.array(df).ravel()
+    if B == None:
+        B = sub_matrix(scheme, df)        
     
     ''' B is a submatrix and scheme is list of list of letters '''
     #print scheme, '\n', B
@@ -103,21 +103,30 @@ def compute_errors(scheme,df, B=None):
         for letter in block:
             scheme_mapping[letter] = k
 
-    # We may not be passing a full scheme here
-    letter_subset = scheme_mapping.keys()
-
-    for l1,l2 in itertools.product(letter_subset,repeat=2):
-        if l1>=l2:
-            i,j = scheme_mapping[l1], scheme_mapping[l2]
-            exact.append( df[l1][l2] )
-            reduced.append( B[i,j] )
+    # Fill in the blanks for incomplete schemes (useful for branch-bound)
+    #for i,letter in enumerate(residue_rows_letters):
+    #    if letter not in scheme_mapping:
+    #        scheme_mapping[letter] = i
 
 
-    total_L2_error = ((np.array(exact)-reduced)**2).sum()
-    return total_L2_error
-    #rms_error = np.sqrt(((exact-reduced)**2).mean())
-    #_,_,corr,_,_, = stats.linregress(exact,reduced)
-    #return rms_error, corr
+    X = np.zeros((20,20))
+    for i,j in zip(*np.triu_indices(20,k=0)):
+
+        l1 = residue_rows_letters[i]
+        l2 = residue_rows_letters[j]
+
+        if l1 in scheme_mapping and l2 in scheme_mapping: 
+            bi = scheme_mapping[l1]
+            bj  = scheme_mapping[l2]
+            X[i,j] = X[j,i] = B[bi,bj]
+
+        else:
+            X[i,j] = X[j,i] = df[l1][l2]
+
+    X = X.ravel()
+    #L2_error = np.linalg.norm(A-X)
+    epsilon = np.sqrt(((A-X)**2).mean())
+    return epsilon
 
 
 comments = read_starting_comments("base_interactions/MJ.txt")
@@ -152,6 +161,6 @@ if __name__ == "__main__":
     for key,scheme in five_bead_schemes.items():
         B = sub_matrix(scheme, df)
         print key
-        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df)
+        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df,B)
         print
 

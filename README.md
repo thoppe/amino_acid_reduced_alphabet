@@ -1,12 +1,26 @@
-Best enumerated alphabets:
+## MJ96 Matrix
 
-    CMFILVWYAGTSNQDEHRKP    483.3916 
-    CMFILVWY AGTSNQDEHRKP    75.8647
-    CMVWY FIL AGTSNQDEHRKP   41.3897
-    CMVWY FIL AGTHP SNQDERK  24.8116
-    CMVWY FIL AH GTSNQRP DEK 18.8571
+Best enumerated alphabets and RMSD from original
+
+    CMFILVWYAGTSNQDEHRKP       483.3916 
+    CMFILVWY AGTSNQDEHRKP       75.8647
+    CMVWY FIL AGTSNQDEHRKP      41.3897
+    CMVWY FIL AGTHP SNQDERK     24.8116
+    CMVWY FIL AH GTSNQRP DEK    18.8571
+    CY MVW FIL AH GTSQRP NDE K  10.9412
+    CY MVW FIL AH GTP SNQR DE K  8.8100
 
 It is worth noting that the optimal five bead is very nearly that of Cieplak's.
+
+Using the RMSD from the full matrix calculation:
+
+    CMVWY FIL AH GTSQRP NDEK 0.2897
+
+    [[ 4.969  5.973  3.739  3.159  2.654]
+     [ 5.973  7.054  4.625  3.991  3.412]
+     [ 3.739  4.625  2.647  2.122  1.783]
+     [ 3.159  3.991  2.122  1.786  1.497]
+     [ 2.654  3.412  1.782  1.497  1.357]]
 
 
 The optimal four-bead interaction matrix in units of -RT
