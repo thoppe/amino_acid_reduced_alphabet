@@ -1,16 +1,18 @@
 # SJKG matrix
-# Contact energies are in -RT units
+# Contact energies are in RT units
 #
-# @article{skolnick1997derivation,
-#  title={Derivation and testing of pair potentials for protein folding. 
-#         When is the quasichemical approximation correct?},
-#  author={Skolnick, Jeffrey and Godzik, Adam and Jaroszewski, 
-#          Lukasz and others},
-#  journal={Protein Science},
-#  volume={6},
-#  number={3},
-#  pages={676--688},
-#  year={1997},
+#
+# @article{skolnick2000derivation,
+#  title={Derivation of protein-specific pair potentials based on 
+#         weak sequence fragment similarity},
+#  author={Skolnick, Jeffrey and Kolinski, Andrzej and Ortiz, Angel},
+#  journal={Proteins: Structure, Function, and Bioinformatics},
+#  volume={38},
+#  number={1},
+#  pages={3--16},
+#  year={2000},
 #  publisher={Wiley Online Library}
 # }
-
+#
+#
+#

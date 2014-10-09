@@ -2,13 +2,13 @@ import numpy as np
 from stirling import stirling_set
 import compute_energy
 from compute_energy import sub_matrix
-import logging, argparse
+import logging, argparse, time
 
 desc = ''' TBW '''
 
 parser = argparse.ArgumentParser(description=desc)
 parser.add_argument('interaction_matrix', type=str,
-                    help="Interaction matrix, must be one of MJ96")
+                    help="Interaction matrix, must be one of MJ96 BT")
 parser.add_argument('--bead_target', '-b', type=int, default=3,
                     help="Number of input beads")
 cargs = vars(parser.parse_args())
@@ -16,6 +16,9 @@ cargs = vars(parser.parse_args())
 # Start the logger
 logging.basicConfig(level=logging.INFO)
 np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
+
+# Measure the start time
+start_time = time.time()
 
 df, L = compute_energy.load_interaction_matrix(cargs["interaction_matrix"])
 
@@ -33,7 +36,7 @@ def find_starting_points(A,**kwargs):
 for index in stirling_set(L, early_break=find_starting_points): pass
 
 import multiprocessing 
-global_min = multiprocessing.Value('f', 1.0)
+global_min = multiprocessing.Value('f', 20**2)
 
 
 target_set = compute_energy.five_bead_schemes["Cieplak_2001"]
@@ -54,7 +57,7 @@ def branch_bound(scheme,**kwargs):
     return False
 
 def pretty_string(scheme):
-    return ' '.join([''.join(x) for x in scheme])
+    return ' '.join([''.join(sorted(x)) for x in scheme])
 
 def solve_scheme(start_pos=None,start_index=None,residue_letters=None):
     global global_min
@@ -111,6 +114,22 @@ B = compute_energy.sub_matrix(best_scheme, df)
 print pretty_string(best_scheme), min_epsilon       
 print
 print B
+
+data = cargs.copy()
+data["scheme"] = pretty_string(best_scheme)
+data["epsilon"] = min_epsilon
+data["bead_interaction_matrix"] = B.tolist()
+data["computation_time"] = start_time - time.time()
+
+import json
+np.set_printoptions(formatter={'float': '{: 0.8f}'.format})
+
+f_results = "results/{interaction_matrix}_{bead_target}.json"
+with open(f_results.format(**cargs), 'w') as FOUT:
+    FOUT.write(json.dumps(data,indent=4))
+    
+
+
 
 
 

@@ -55,14 +55,18 @@ def read_starting_comments(f, comment_char = "#"):
                 break
     return comments
 
+_valid_interaction_names = ["MJ96", "BT",]
+
 def load_interaction_matrix(name):
 
-    valid_names = ["MJ96",]
-    if name not in valid_names:
+    if name not in _valid_interaction_names:
         raise KeyError("Matrix {} not defined".format(matrix_name))
 
     if name == "MJ96":
         f_matrix = "base_interactions/MJ96.txt"
+
+    if name == "BT":
+        f_matrix = "base_interactions/BT.txt"
 
     comments = read_starting_comments(f_matrix)
     residue_rows = comments[-1].upper().split()

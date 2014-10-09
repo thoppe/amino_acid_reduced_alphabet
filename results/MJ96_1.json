@@ -1,0 +1,12 @@
+{
+    "bead_interaction_matrix": [
+        [
+            -3.1660000000000004
+        ]
+    ], 
+    "epsilon": 1.4733724919381384, 
+    "computation_time": -0.16504502296447754, 
+    "interaction_matrix": "MJ96", 
+    "bead_target": 1, 
+    "scheme": "ACDEFGHIKLMNPQRSTVWY"
+}

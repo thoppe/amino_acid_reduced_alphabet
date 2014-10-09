@@ -1,4 +1,4 @@
-# B matrix by Thirumalai
+# BT matrix by Thirumalai
 # Contact energies are in RT units
 #
 # @article{betancourt1999pair,
