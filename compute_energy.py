@@ -44,9 +44,9 @@ residue_mapping = {
   "TRP":'W',
   "TYR":'Y'}
 
-def read_starting_comments(f_MJ, comment_char = "#"):
+def read_starting_comments(f, comment_char = "#"):
     comments = []
-    with open(f_MJ) as FIN:
+    with open(f) as FIN:
         for line in FIN:
             line = line.strip()
             if line[0] == comment_char:
@@ -55,9 +55,28 @@ def read_starting_comments(f_MJ, comment_char = "#"):
                 break
     return comments
 
-def read_MJ_matrix(f_MJ = "base_interactions/MJ.txt"):
+def load_interaction_matrix(name):
 
-    df = pd.read_csv(f_MJ, sep='\s+', comment="#", 
+    valid_names = ["MJ96",]
+    if name not in valid_names:
+        raise KeyError("Matrix {} not defined".format(matrix_name))
+
+    if name == "MJ96":
+        f_matrix = "base_interactions/MJ96.txt"
+
+    comments = read_starting_comments(f_matrix)
+    residue_rows = comments[-1].upper().split()
+    residue_rows_letters = [residue_mapping[item] for item in residue_rows]
+
+    df = read_interaction_matrix(f_matrix,comments,residue_rows_letters)
+
+    return df, residue_rows_letters
+
+
+def read_interaction_matrix(f_interaction,comments,residue_rows_letters):
+    comments = read_starting_comments(f_interaction)
+
+    df = pd.read_csv(f_interaction, sep='\s+', comment="#", 
                      skiprows=len(comments), header=None)
     df.columns = residue_rows_letters
     df.index   = residue_rows_letters
@@ -85,13 +104,14 @@ def sub_matrix(letter_blocks,df):
         A[i,j] = w
     return A
 
-def compute_errors(scheme,df, B=None):
+def compute_errors(scheme,df, L, B=None):
     ''' 
     This is supposed to match with Table 3 and this gets the right 
     rank order, but the magnitudes are not correct.
     '''
 
     A = np.array(df).ravel()
+
     if B == None:
         B = sub_matrix(scheme, df)        
     
@@ -103,19 +123,13 @@ def compute_errors(scheme,df, B=None):
         for letter in block:
             scheme_mapping[letter] = k
 
-    # Fill in the blanks for incomplete schemes (useful for branch-bound)
-    #for i,letter in enumerate(residue_rows_letters):
-    #    if letter not in scheme_mapping:
-    #        scheme_mapping[letter] = i
-
-
     X = np.zeros((20,20))
     for i,j in zip(*np.triu_indices(20,k=0)):
 
-        l1 = residue_rows_letters[i]
-        l2 = residue_rows_letters[j]
+        l1 = L[i]
+        l2 = L[j]
 
-        if l1 in scheme_mapping and l2 in scheme_mapping: 
+        if l1 in scheme_mapping and l2 in scheme_mapping:
             bi = scheme_mapping[l1]
             bj  = scheme_mapping[l2]
             X[i,j] = X[j,i] = B[bi,bj]
@@ -128,11 +142,6 @@ def compute_errors(scheme,df, B=None):
     epsilon = np.sqrt(((A-X)**2).mean())
     return epsilon
 
-
-comments = read_starting_comments("base_interactions/MJ.txt")
-residue_rows = comments[-1].upper().split()
-residue_rows_letters = [residue_mapping[item] for item in residue_rows]
-                                   
 
 '''
 Five-bead schemes in Table 2 of Luthra et. al. 
@@ -154,13 +163,14 @@ def pretty_string(scheme):
     return ' '.join([''.join(x) for x in scheme])
 
 if __name__ == "__main__":
-    df = read_MJ_matrix()
+
+    df, L = load_interaction_matrix("MJ96")
 
     np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
 
     for key,scheme in five_bead_schemes.items():
         B = sub_matrix(scheme, df)
         print key
-        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df,B)
+        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df,L,B)
         print
 

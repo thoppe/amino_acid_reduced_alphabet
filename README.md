@@ -1,6 +1,6 @@
 ## MJ96 Matrix
 
-Best enumerated alphabets and RMSD from original
+Optimal reduced alphabets and RMSD from original
 
     CMFILVWYAGTSNQDEHRKP       483.3916 
     CMFILVWY AGTSNQDEHRKP       75.8647
