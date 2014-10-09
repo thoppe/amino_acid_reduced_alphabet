@@ -8,7 +8,7 @@ desc = ''' TBW '''
 
 parser = argparse.ArgumentParser(description=desc)
 parser.add_argument('interaction_matrix', type=str,
-                    help="Interaction matrix, must be one of MJ96 BT")
+                    help="Interaction matrix, must be one of MJ96 BT SJKG")
 parser.add_argument('--bead_target', '-b', type=int, default=3,
                     help="Number of input beads")
 cargs = vars(parser.parse_args())
@@ -122,7 +122,7 @@ data["bead_interaction_matrix"] = B.tolist()
 data["computation_time"] = start_time - time.time()
 
 import json
-np.set_printoptions(formatter={'float': '{: 0.8f}'.format})
+np.set_printoptions(formatter={'float': '{: 0.6f}'.format})
 
 f_results = "results/{interaction_matrix}_{bead_target}.json"
 with open(f_results.format(**cargs), 'w') as FOUT:

@@ -55,7 +55,7 @@ def read_starting_comments(f, comment_char = "#"):
                 break
     return comments
 
-_valid_interaction_names = ["MJ96", "BT",]
+_valid_interaction_names = ["MJ96", "BT", "SJKG"]
 
 def load_interaction_matrix(name):
 
@@ -67,6 +67,9 @@ def load_interaction_matrix(name):
 
     if name == "BT":
         f_matrix = "base_interactions/BT.txt"
+
+    if name == "SJKG":
+        f_matrix = "base_interactions/SJKG.txt"
 
     comments = read_starting_comments(f_matrix)
     residue_rows = comments[-1].upper().split()
