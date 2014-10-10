@@ -1,0 +1,17 @@
+{
+    "bead_interaction_matrix": [
+        [
+            0.3, 
+            -0.12222222222222222
+        ], 
+        [
+            -0.12222222222222223, 
+            -1.0123456790123457
+        ]
+    ], 
+    "epsilon": 0.3647255013815523, 
+    "computation_time": -19.785022020339966, 
+    "interaction_matrix": "SJKG", 
+    "bead_target": 2, 
+    "scheme": "ADEGKNPQRST CFHILMVWY"
+}

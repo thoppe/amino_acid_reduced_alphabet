@@ -79,7 +79,9 @@ def solve_scheme(start_pos=None,start_index=None,residue_letters=None):
         if epsilon < global_min.value and len(scheme)==cargs["bead_target"]:
 
             with global_min.get_lock():
-                global_min.value = epsilon
+                # Check again under the lock to be sure
+                if epsilon < global_min.value:
+                    global_min.value = epsilon
 
             vals = pretty_string(scheme), epsilon, target_error 
             logging.info("{} {:.4f} {:.4f}".format(*vals))

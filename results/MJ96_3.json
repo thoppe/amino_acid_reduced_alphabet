@@ -17,7 +17,7 @@
         ]
     ], 
     "epsilon": 0.4307493006378536, 
-    "computation_time": -9.355254173278809, 
+    "computation_time": -8.929996967315674, 
     "interaction_matrix": "MJ96", 
     "bead_target": 3, 
     "scheme": "CMVWY FIL ADEGHKNPQRST"

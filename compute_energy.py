@@ -154,17 +154,32 @@ def compute_errors(scheme,df, L, B=None):
 Five-bead schemes in Table 2 of Luthra et. al. 
 '''
 
-five_bead_schemes = {}
-five_bead_schemes["PAM_Koisol_2004"] = "AGTSNQDEHRKP,W,YF,MIVL,C"
-five_bead_schemes["WAG_Koisol_2004"] = "AGTSNQDEHRKP,CV,IML,FY,W"
-five_bead_schemes["Wang_Wang_1999"]  = "CMIFLYWV,AHT,GP,QNRSK,DE"
-five_bead_schemes["Wang_Wang_2002"]  = "CMFI,LVWY,AGTS,NQDE,HPRK"
-five_bead_schemes["Li_2003"]         = "CFYW,MLIV,G,PATS,NHQEDRK"
-five_bead_schemes["Chemical_prop"]   = "IVL,FYWH,KRDE,GACS,TMNQP"
-five_bead_schemes["Cieplak_2001"]    = "LFI,MVWCY,HA,TGPRQSNED,K"
+import collections
+published_schemes = collections.defaultdict(dict)
 
-for key,scheme in five_bead_schemes.items():
-    five_bead_schemes[key] = [x for x in scheme.split(',')]
+published_schemes[5]["PAM_Koisol_2004"] = "AGTSNQDEHRKP,W,YF,MIVL,C"
+published_schemes[5]["WAG_Koisol_2004"] = "AGTSNQDEHRKP,CV,IML,FY,W"
+
+published_schemes[2]["Wang_Wang_1999"]  = "LFIMVWCY,HATGPRQSNEDK"
+published_schemes[5]["Wang_Wang_1999"]  = "CMIFLYWV,AHT,GP,QNRSK,DE"
+
+published_schemes[5]["Wang_Wang_2002"]  = "CMFI,LVWY,AGTS,NQDE,HPRK"
+published_schemes[5]["Li_2003"]         = "CFYW,MLIV,G,PATS,NHQEDRK"
+published_schemes[5]["Chemical_prop"]   = "IVL,FYWH,KRDE,GACS,TMNQP"
+published_schemes[5]["Cieplak_2001"]    = "LFI,MVWCY,HA,TGPRQSNED,K"
+
+published_schemes[2]["Cieplak_2001"]    = "LFIMVWCY,HATGPRQSNEDK"
+
+published_schemes[4]["Shepherd_2007"]   = "LFI,MVWCY,HATGP,RQSNEDK"
+published_schemes[8]["Shepherd_2007"]   = "LF,I,MVW,CY,HAT,GP,RQS,NEDK"
+
+published_schemes[5]["Rakshit_2007"]   = "C,KR,MFILVWYA,DE,GTSNQHP"
+
+
+
+for parts in published_schemes:
+    for key,scheme in published_schemes[parts].items():
+        published_schemes[parts][key] = [x for x in scheme.split(',')]
 
 def pretty_string(scheme):
     return ' '.join([''.join(x) for x in scheme])
@@ -175,7 +190,7 @@ if __name__ == "__main__":
 
     np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
 
-    for key,scheme in five_bead_schemes.items():
+    for key,scheme in published_schemes[5].items():
         B = sub_matrix(scheme, df)
         print key
         print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df,L,B)
