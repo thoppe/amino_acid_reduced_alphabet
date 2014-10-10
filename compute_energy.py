@@ -44,6 +44,45 @@ residue_mapping = {
   "TRP":'W',
   "TYR":'Y'}
 
+'''
+Amino acid propensities are taken from the publication:
+
+@article{costantini2006amino,
+  title={Amino acid propensities for secondary structures are influenced by the protein structural class},
+  author={Costantini, Susan and Colonna, Giovanni and Facchiano, Angelo M},
+  journal={Biochemical and biophysical research communications},
+  volume={342},
+  number={2},
+  pages={441--451},
+  year={2006},
+  publisher={Elsevier}
+}
+'''
+
+residue_propensities = {
+    "A" : .0773,
+    "C" : .0184,
+    "D" : .0582,
+    "E" : .0661,
+    "F" : .0405,
+    "G" : .0711,
+    "H" : .0235,
+    "I" : .0566,
+    "K" : .0627,
+    "L" : .0883,
+    "M" : .0208,
+    "N" : .0450,
+    "P" : .0452,
+    "Q" : .0394,
+    "R" : .0503,
+    "S" : .0613,
+    "T" : .0553,
+    "V" : .0691,
+    "W" : .0151,
+    "Y" : .0354,
+}
+
+
 def read_starting_comments(f, comment_char = "#"):
     comments = []
     with open(f) as FIN:
@@ -111,7 +150,7 @@ def sub_matrix(letter_blocks,df):
         A[i,j] = w
     return A
 
-def compute_errors(scheme,df, L, B=None):
+def compute_errors(scheme,df, L, B=None, residue_weighted=False):
     ''' 
     This is supposed to match with Table 3 and this gets the right 
     rank order, but the magnitudes are not correct.
@@ -119,7 +158,7 @@ def compute_errors(scheme,df, L, B=None):
 
     A = np.array(df).ravel()
 
-    if B == None:
+    if type(B) == type(None):
         B = sub_matrix(scheme, df)        
     
     ''' B is a submatrix and scheme is list of list of letters '''
@@ -131,10 +170,13 @@ def compute_errors(scheme,df, L, B=None):
             scheme_mapping[letter] = k
 
     X = np.zeros((20,20))
+    W = np.zeros((20,20))
     for i,j in zip(*np.triu_indices(20,k=0)):
 
         l1 = L[i]
         l2 = L[j]
+
+        W[i,j] = residue_propensities[l1]*residue_propensities[l2]
 
         if l1 in scheme_mapping and l2 in scheme_mapping:
             bi = scheme_mapping[l1]
@@ -145,8 +187,13 @@ def compute_errors(scheme,df, L, B=None):
             X[i,j] = X[j,i] = df[l1][l2]
 
     X = X.ravel()
-    #L2_error = np.linalg.norm(A-X)
-    epsilon = np.sqrt(((A-X)**2).mean())
+    W = W.ravel()
+    
+    # Remove weight if not asked for
+    if not residue_weighted:  W = np.ones(W.shape)
+    squares = (A-X)**2
+    
+    epsilon = np.sqrt(np.average(squares,weights=W))
     return epsilon
 
 
@@ -193,6 +240,8 @@ if __name__ == "__main__":
     for key,scheme in published_schemes[5].items():
         B = sub_matrix(scheme, df)
         print key
-        print pretty_string(scheme), '\n', B, '\n', compute_errors(scheme,df,L,B)
+        print pretty_string(scheme), '\n', B, '\n', 
+        print compute_errors(scheme,df,L,B)
         print
+        break
 
